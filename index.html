@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinPredictor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script>
+    // Include React and ReactDOM scripts (CDN links)
+    const reactScript = document.createElement('script');
+    reactScript.src = "https://unpkg.com/react@17/umd/react.production.min.js";
+    document.head.appendChild(reactScript);
+
+    const reactDomScript = document.createElement('script');
+    reactDomScript.src = "https://unpkg.com/react-dom@17/umd/react-dom.production.min.js";
+    document.head.appendChild(reactDomScript);
+
+    reactDomScript.onload = function () {
+      // After ReactDOM is loaded, define the React components
+      const { createElement } = React;
+      const { render } = ReactDOM;
+
+      const InvestmentPortfolio = () =>
+        createElement('div', { className: 'section' }, [
+          createElement('h2', {}, 'Investment Portfolio'),
+          createElement('p', {}, 'Content for Investment Portfolio goes here.')
+        ]);
+
+      const FinancialForecast = () =>
+        createElement('div', { className: 'section' }, [
+          createElement('h2', {}, 'Financial Forecast'),
+          createElement('p', {}, 'Content for Financial Forecast goes here.')
+        ]);
+
+      const AIInsights = () =>
+        createElement('div', { className: 'section' }, [
+          createElement('h2', {}, 'AI Insights'),
+          createElement('p', {}, 'Content for AI Insights goes here.')
+        ]);
+
+      const Index = () =>
+        createElement('div', { className: 'min-h-screen bg-gray-50 p-4 md:p-8' }, [
+          createElement('div', { className: 'max-w-7xl mx-auto space-y-8' }, [
+            createElement('div', {}, [
+              createElement('h1', { className: 'text-3xl font-bold mb-2' }, 'FinPredictor'),
+              createElement('p', { className: 'text-gray-500' }, 'Advanced Investment & Financial Forecasting Platform')
+            ]),
+            createElement(InvestmentPortfolio),
+            createElement(FinancialForecast),
+            createElement(AIInsights)
+          ])
+        ]);
+
+      // Render the Index component
+      render(createElement(Index), document.getElementById('root'));
+    };
+  </script>
+</body>
+</html>
