@@ -1,63 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FinPredictor</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 70%;
+            max-width: 400px;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.6);
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 75%;
+            max-width: 300px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: none;
+            text-align: left;
+        }
+
+        .phonetic {
+            font-size: 20px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .definition {
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .definition h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .definition p {
+            margin: 5px 0;
+        }
+
+        .audio-btn {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .audio-btn:hover {
+            background-color: #0b7dda;
+        }
+
+        .loading {
+            font-size: 18px;
+            color: #4CAF50;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            input[type="text"] {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                padding: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="root"></div>
-  
-  <script>
-    // Include React and ReactDOM scripts (CDN links)
-    const reactScript = document.createElement('script');
-    reactScript.src = "https://unpkg.com/react@17/umd/react.production.min.js";
-    document.head.appendChild(reactScript);
 
-    const reactDomScript = document.createElement('script');
-    reactDomScript.src = "https://unpkg.com/react-dom@17/umd/react-dom.production.min.js";
-    document.head.appendChild(reactDomScript);
+<div class="container">
+    <h1>Dictionary App</h1>
+    <div>
+        <input type="text" id="wordInput" placeholder="Enter a word" />
+        <button onclick="fetchWordDefinition()">Get Definition</button>
+    </div>
+    <div id="loading" class="loading" style="display: none;">Loading...</div>
+    <div id="result" class="result"></div>
+    <div id="error" class="error-message" style="display: none;"></div>
+</div>
 
-    reactDomScript.onload = function () {
-      // After ReactDOM is loaded, define the React components
-      const { createElement } = React;
-      const { render } = ReactDOM;
+<script>
+    async function fetchWordDefinition() {
+        const word = document.getElementById("wordInput").value.trim();
+        const loading = document.getElementById("loading");
+        const resultContainer = document.getElementById("result");
+        const errorContainer = document.getElementById("error");
 
-      const InvestmentPortfolio = () =>
-        createElement('div', { className: 'section' }, [
-          createElement('h2', {}, 'Investment Portfolio'),
-          createElement('p', {}, 'Content for Investment Portfolio goes here.')
-        ]);
+        if (!word) {
+            errorContainer.style.display = 'block';
+            errorContainer.innerHTML = 'Please enter a valid word.';
+            return;
+        }
 
-      const FinancialForecast = () =>
-        createElement('div', { className: 'section' }, [
-          createElement('h2', {}, 'Financial Forecast'),
-          createElement('p', {}, 'Content for Financial Forecast goes here.')
-        ]);
+        errorContainer.style.display = 'none';
+        resultContainer.style.display = 'none';
+        loading.style.display = 'block';
 
-      const AIInsights = () =>
-        createElement('div', { className: 'section' }, [
-          createElement('h2', {}, 'AI Insights'),
-          createElement('p', {}, 'Content for AI Insights goes here.')
-        ]);
+        const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
 
-      const Index = () =>
-        createElement('div', { className: 'min-h-screen bg-gray-50 p-4 md:p-8' }, [
-          createElement('div', { className: 'max-w-7xl mx-auto space-y-8' }, [
-            createElement('div', {}, [
-              createElement('h1', { className: 'text-3xl font-bold mb-2' }, 'FinPredictor'),
-              createElement('p', { className: 'text-gray-500' }, 'Advanced Investment & Financial Forecasting Platform')
-            ]),
-            createElement(InvestmentPortfolio),
-            createElement(FinancialForecast),
-            createElement(AIInsights)
-          ])
-        ]);
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            loading.style.display = 'none';
 
-      // Render the Index component
-      render(createElement(Index), document.getElementById('root'));
-    };
-  </script>
+            if (data.title === "No Definitions Found") {
+                errorContainer.style.display = 'block';
+                errorContainer.innerHTML = `No definitions found for the word "${word}". Please try another word.`;
+                return;
+            }
+
+            const wordData = data[0];
+            let resultHTML = `<h2>${wordData.word}</h2>`;
+            
+            // Phonetic and audio
+            if (wordData.phonetic) {
+                resultHTML += `<p class="phonetic">Phonetic: ${wordData.phonetic}</p>`;
+            }
+            if (wordData.phonetics && wordData.phonetics[0] && wordData.phonetics[0].audio) {
+                resultHTML += `<button class="audio-btn" onclick="playAudio('${wordData.phonetics[0].audio}')">Play Pronunciation</button>`;
+            }
+
+            // Origin
+            if (wordData.origin) {
+                resultHTML += `<p><strong>Origin:</strong> ${wordData.origin}</p>`;
+            }
+
+            // Meanings
+            wordData.meanings.forEach(meaning => {
+                resultHTML += `<div class="definition"><h3>Part of Speech: ${meaning.partOfSpeech}</h3>`;
+                meaning.definitions.forEach(definition => {
+                    resultHTML += `<p><strong>Definition:</strong> ${definition.definition}</p>`;
+                    if (definition.example) {
+                        resultHTML += `<p><strong>Example:</strong> ${definition.example}</p>`;
+                    }
+                    resultHTML += `</div>`;
+                });
+            });
+
+            resultContainer.innerHTML = resultHTML;
+            resultContainer.style.display = 'block';
+
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            loading.style.display = 'none';
+            errorContainer.style.display = 'block';
+            errorContainer.innerHTML = 'There was an error retrieving the word definition. Please try again later.';
+        }
+    }
+
+    function playAudio(audioUrl) {
+        const audio = new Audio(audioUrl);
+        audio.play();
+    }
+</script>
+
 </body>
 </html>
